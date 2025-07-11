@@ -15,44 +15,6 @@
                     </div>
                     <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                        </svg>
-                    </div>
-                </div>
-                <div class="mt-4 flex items-center">
-                    <div class="w-full bg-white/20 rounded-full h-2">
-                        <div class="bg-white h-2 rounded-full transition-all duration-1000" style="width: 85%"></div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 p-6 text-white transform hover:-translate-y-1">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <h3 class="text-3xl font-bold">{{ $events->where('is_free', true)->count() }}</h3>
-                        <p class="text-blue-100 text-sm font-medium">Free Events</p>
-                    </div>
-                    <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2-2v16a2 2 0 002 2z"></path>
-                        </svg>
-                    </div>
-                </div>
-                <div class="mt-4 flex items-center">
-                    <div class="w-full bg-white/20 rounded-full h-2">
-                        <div class="bg-white h-2 rounded-full transition-all duration-1000" style="width: 65%"></div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 p-6 text-white transform hover:-translate-y-1">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <h3 class="text-3xl font-bold">{{ $events->where('is_free', false)->count() }}</h3>
-                        <p class="text-purple-100 text-sm font-medium">Paid Events</p>
-                    </div>
-                    <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
                         </svg>
                     </div>
@@ -83,6 +45,29 @@
                 </div>
             </div>
         </div>
+
+        <!-- Alerts -->
+        @if (session('success'))
+        <div class="bg-green-50 border border-green-200 text-green-800 px-4 py-3 rounded-lg mb-6 slide-in-right" role="alert">
+            <div class="flex items-center">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+                {{ session('success') }}
+            </div>
+        </div>
+        @endif
+
+        @if (session('error'))
+        <div class="bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded-lg mb-6 slide-in-right" role="alert">
+            <div class="flex items-center">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+                {{ session('error') }}
+            </div>
+        </div>
+        @endif
 
         <!-- Enhanced Filter Bar -->
         <div class="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 mb-8 hover:shadow-xl transition-shadow duration-300">
@@ -150,6 +135,14 @@
 
                 <!-- Action Buttons -->
                 <div class="flex items-center space-x-3">
+                    <!-- Create Event Button -->
+                    <a href="{{ route('admin.events.create') }}" class="inline-flex items-center px-4 py-2.5 bg-green-600 hover:bg-green-700 text-white text-sm font-medium rounded-xl transition-all duration-200 shadow-sm hover:shadow-md transform hover:-translate-y-0.5">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                        </svg>
+                        Create Event
+                    </a>
+                    
                     <!-- Clear Filters Button -->
                     <button id="clear-filters" class="inline-flex items-center px-4 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium rounded-xl transition-all duration-200 shadow-sm hover:shadow-md transform hover:-translate-y-0.5">
                         <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -217,7 +210,15 @@
                             </svg>
                         </div>
                         <h3 class="text-xl font-semibold text-gray-900 mb-3">No events published yet</h3>
-                        <p class="text-gray-500 max-w-md mx-auto">No events have been published yet. Approved events will appear here.</p>
+                        <p class="text-gray-500 max-w-md mx-auto">No events have been published yet. You can create new events or approve pending requests.</p>
+                        <div class="mt-6">
+                            <a href="{{ route('admin.events.create') }}" class="inline-flex items-center px-4 py-2 bg-green-600 text-white text-sm font-medium rounded-lg hover:bg-green-700 transition-colors">
+                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                                </svg>
+                                Create Your First Event
+                            </a>
+                        </div>
                     </div>
                 @endforelse
             </div>
@@ -225,7 +226,7 @@
     </div>
 
     <script>
-        // Filter functionality
+        // Filter functionality (same as before)
         document.addEventListener('DOMContentLoaded', function() {
             const categoryFilter = document.getElementById('category-filter');
             const areaFilter = document.getElementById('area-filter');
@@ -236,7 +237,6 @@
             const filterTagsDiv = document.getElementById('filter-tags');
             const eventsContainer = document.getElementById('events-container');
             
-            // Add smooth animations to select elements
             [categoryFilter, areaFilter, feeFilter].forEach(select => {
                 select.addEventListener('focus', function() {
                     this.classList.add('transform', 'scale-105');
@@ -322,7 +322,6 @@
                     }
                 });
                 
-                // Update results counter with animation
                 resultsCount.style.transform = 'scale(1.1)';
                 setTimeout(() => {
                     resultsCount.textContent = `${visibleCount} event${visibleCount !== 1 ? 's' : ''}`;
@@ -337,7 +336,6 @@
                 areaFilter.value = '';
                 feeFilter.value = '';
                 
-                // Add clearing animation
                 [categoryFilter, areaFilter, feeFilter].forEach(select => {
                     select.style.transform = 'scale(0.95)';
                     setTimeout(() => {
@@ -368,37 +366,45 @@
             feeFilter.addEventListener('change', filterEvents);
             clearFiltersBtn.addEventListener('click', clearAllFilters);
             
-            // Initialize
             updateActiveFilters();
         });
-
-        // Add CSS for animations
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes fade-in {
-                from { opacity: 0; transform: translateY(10px); }
-                to { opacity: 1; transform: translateY(0); }
-            }
-            
-            .animate-fade-in {
-                animation: fade-in 0.3s ease-out;
-            }
-            
-            select {
-                background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236B7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
-                background-position: right 0.75rem center;
-                background-repeat: no-repeat;
-                background-size: 1.25em 1.25em;
-                -webkit-appearance: none;
-                -moz-appearance: none;
-                appearance: none;
-                padding-right: 2.5rem;
-            }
-            
-            select:hover {
-                background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%234B5563' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
-            }
-        `;
-        document.head.appendChild(style);
     </script>
-@endsection
+@endsection="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                    </div>
+                </div>
+                <div class="mt-4 flex items-center">
+                    <div class="w-full bg-white/20 rounded-full h-2">
+                        <div class="bg-white h-2 rounded-full transition-all duration-1000" style="width: 85%"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 p-6 text-white transform hover:-translate-y-1">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h3 class="text-3xl font-bold">{{ $events->where('is_free', true)->count() }}</h3>
+                        <p class="text-blue-100 text-sm font-medium">Free Events</p>
+                    </div>
+                    <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2-2v16a2 2 0 002 2z"></path>
+                        </svg>
+                    </div>
+                </div>
+                <div class="mt-4 flex items-center">
+                    <div class="w-full bg-white/20 rounded-full h-2">
+                        <div class="bg-white h-2 rounded-full transition-all duration-1000" style="width: 65%"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 p-6 text-white transform hover:-translate-y-1">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h3 class="text-3xl font-bold">{{ $events->where('is_free', false)->count() }}</h3>
+                        <p class="text-purple-100 text-sm font-medium">Paid Events</p>
+                    </div>
+                    <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width
