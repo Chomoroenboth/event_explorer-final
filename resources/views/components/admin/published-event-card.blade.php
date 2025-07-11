@@ -159,51 +159,47 @@
             @endif
 
             <!-- Admin Actions -->
-            <div class="bg-gray-50 rounded-lg p-4 border border-gray-200">
-                <div class="flex items-center justify-between">
-                    <div class="flex items-center space-x-4">
-                        <div class="text-xs text-gray-500">
-                            <span class="font-medium">Published:</span> {{ date('M j, Y g:i A', strtotime($event->updated_at)) }}
-                        </div>
-                        @if ($event->approved_by)
-                            <div class="text-xs text-gray-500">
-                                <span class="font-medium">By:</span> Admin {{ $event->approved_by }}
-                            </div>
-                        @endif
-                        <div class="flex items-center text-xs text-gray-500">
-                            <svg class="w-4 h-4 mr-1 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
-                            </svg>
-                            <span class="font-medium">{{ \App\Models\SavedEvent::where('event_id', $event->id)->count() }} saves</span>
-                        </div>
-                    </div>
-                    
-                    <!-- Action Buttons -->
-                    <div class="flex items-center space-x-2">
-                        <a href="{{ route('admin.events.edit', $event->id) }}" 
-                           class="inline-flex items-center px-3 py-1.5 bg-blue-600 text-white text-xs font-medium rounded-lg hover:bg-blue-700 transition-colors">
-                            <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
-                            </svg>
-                            Edit
-                        </a>
-                        
-                        <form method="POST" action="{{ route('admin.events.delete', $event->id) }}" 
-                              onsubmit="return confirm('Are you sure you want to delete this event? This action cannot be undone.');" 
-                              class="inline">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" 
-                                    class="inline-flex items-center px-3 py-1.5 bg-red-600 text-white text-xs font-medium rounded-lg hover:bg-red-700 transition-colors">
-                                <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                                </svg>
-                                Delete
-                            </button>
-                        </form>
-                    </div>
-                </div>
+            <!-- Admin Actions -->
+<div class="bg-gray-50 rounded-lg p-4 border border-gray-200">
+    <div class="flex items-center justify-between">
+        <div class="flex items-center space-x-4">
+            <div class="text-xs text-gray-500">
+                <span class="font-medium">Published:</span> {{ date('M j, Y g:i A', strtotime($event->updated_at)) }}
             </div>
+            @if ($event->approved_by)
+                <div class="text-xs text-gray-500">
+                    <span class="font-medium">By:</span> Admin {{ $event->approved_by }}
+                </div>
+            @endif
+            <div class="flex items-center text-xs text-gray-500">
+                <svg class="w-4 h-4 mr-1 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                </svg>
+                <span class="font-medium">{{ \App\Models\SavedEvent::where('event_id', $event->id)->count() }} saves</span>
+            </div>
+        </div>
+        
+        <!-- Improved Action Buttons -->
+        <div class="event-actions">
+            <a href="{{ route('admin.events.edit', $event->id) }}" class="btn btn-edit">
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                </svg>
+                <span>Edit</span>
+            </a>
+            
+            <form method="POST" action="{{ route('admin.events.delete', $event->id) }}" 
+                  onsubmit="return confirm('Are you sure you want to delete this event? This action cannot be undone.');" 
+                  class="inline">
+                @csrf
+                @method('DELETE')
+                <button type="submit" class="btn btn-delete">
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                    </svg>
+                    <span>Delete</span>
+                </button>
+            </form>
         </div>
     </div>
 </div>
