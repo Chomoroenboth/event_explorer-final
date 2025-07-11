@@ -15,8 +15,8 @@
                         </svg>
                     </div>
                     <div class="ml-4">
-                        <h3 class="text-lg font-semibold text-gray-900">{{ $eventRequests->count() }}</h3>
-                        <p class="text-sm text-gray-600">Pending Requests</p>
+                        <h3 class="text-lg font-semibold text-white">{{ $eventRequests->count() }}</h3>
+                        <p class="text-sm text-gray-300">Pending Requests</p>
                     </div>
                 </div>
             </div>
@@ -29,8 +29,8 @@
                         </svg>
                     </div>
                     <div class="ml-4">
-                        <h3 class="text-lg font-semibold text-gray-900">{{ \App\Models\EventRequest::where('approval_status', 'approved')->count() }}</h3>
-                        <p class="text-sm text-gray-600">Approved Events</p>
+                        <h3 class="text-lg font-semibold text-white">{{ \App\Models\EventRequest::where('approval_status', 'approved')->count() }}</h3>
+                        <p class="text-sm text-gray-300">Approved Events</p>
                     </div>
                 </div>
             </div>
@@ -43,8 +43,8 @@
                         </svg>
                     </div>
                     <div class="ml-4">
-                        <h3 class="text-lg font-semibold text-gray-900">{{ \App\Models\User::count() }}</h3>
-                        <p class="text-sm text-gray-600">Total Users</p>
+                        <h3 class="text-lg font-semibold text-white">{{ \App\Models\User::count() }}</h3>
+                        <p class="text-sm text-gray-300">Total Users</p>
                     </div>
                 </div>
             </div>

@@ -18,6 +18,18 @@ class AdminController extends Controller
         ]);
     }
 
+    // NEW METHOD: Display all approved/published events
+    public function events()
+    {
+        $approvedEvents = EventRequest::where('approval_status', EventRequest::APPROVAL_STATUS_APPROVED)
+            ->orderBy('created_at', 'desc')
+            ->get();
+        
+        return view('admin.events', [
+            'events' => $approvedEvents,
+        ]);
+    }
+
     public function editProposeEvent(Request $request)
     {
         try {
