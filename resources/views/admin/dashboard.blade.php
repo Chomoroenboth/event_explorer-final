@@ -10,12 +10,12 @@
             <div class="stats-card stats-card-blue">
                 <div class="flex items-center justify-between">
                     <div>
-                        <h3 class="text-3xl font-bold mb-2">{{ $eventRequests->count() }}</h3>
+                        <h3 class="text-3xl font-bold mb-2" data-pending-count>{{ $eventRequests->count() }}</h3>
                         <p class="text-blue-100 text-sm font-medium">Pending Requests</p>
                     </div>
                     <div class="stats-icon bg-white/20">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2-2v16a2 2 0 002 2z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v16a2 2 0 002 2z"></path>
                         </svg>
                     </div>
                 </div>
@@ -35,7 +35,10 @@
             <div class="stats-card stats-card-green">
                 <div class="flex items-center justify-between">
                     <div>
-                        <h3 class="text-3xl font-bold mb-2">{{ \App\Models\EventRequest::where('approval_status', 'approved')->count() }}</h3>
+                        @php
+                            $approvedCount = \App\Models\EventRequest::where('approval_status', 'approved')->count();
+                        @endphp
+                        <h3 class="text-3xl font-bold mb-2">{{ $approvedCount }}</h3>
                         <p class="text-green-100 text-sm font-medium">Approved Events</p>
                     </div>
                     <div class="stats-icon bg-white/20">
@@ -60,7 +63,10 @@
             <div class="stats-card stats-card-purple">
                 <div class="flex items-center justify-between">
                     <div>
-                        <h3 class="text-3xl font-bold mb-2">{{ \App\Models\User::count() }}</h3>
+                        @php
+                            $totalUsers = \App\Models\User::count();
+                        @endphp
+                        <h3 class="text-3xl font-bold mb-2">{{ $totalUsers }}</h3>
                         <p class="text-purple-100 text-sm font-medium">Total Users</p>
                     </div>
                     <div class="stats-icon bg-white/20">
@@ -85,7 +91,11 @@
             <div class="stats-card stats-card-orange">
                 <div class="flex items-center justify-between">
                     <div>
-                        <h3 class="text-3xl font-bold mb-2">{{ round((\App\Models\EventRequest::where('approval_status', 'approved')->count() / max(\App\Models\EventRequest::count(), 1)) * 100) }}%</h3>
+                        @php
+                            $totalRequests = \App\Models\EventRequest::count();
+                            $approvalRate = $totalRequests > 0 ? round(($approvedCount / $totalRequests) * 100) : 0;
+                        @endphp
+                        <h3 class="text-3xl font-bold mb-2">{{ $approvalRate }}%</h3>
                         <p class="text-orange-100 text-sm font-medium">Approval Rate</p>
                     </div>
                     <div class="stats-icon bg-white/20">
@@ -96,7 +106,7 @@
                 </div>
                 <div class="mt-4 flex items-center">
                     <div class="w-full bg-white/20 rounded-full h-2">
-                        <div class="bg-white h-2 rounded-full transition-all duration-1000" style="width: {{ round((\App\Models\EventRequest::where('approval_status', 'approved')->count() / max(\App\Models\EventRequest::count(), 1)) * 100) }}%"></div>
+                        <div class="bg-white h-2 rounded-full transition-all duration-1000" style="width: {{ $approvalRate }}%"></div>
                     </div>
                 </div>
                 <div class="mt-3 flex items-center text-sm text-orange-100">
@@ -207,7 +217,22 @@
             <div id="events-container">
                 @forelse ($eventRequests as $index => $eq)
                     <div class="event-item fade-in" style="animation-delay: {{ $index * 0.1 }}s">
-                        <x-admin.event-request-card :eventRequest="$eq" />
+                        @if(View::exists('components.admin.event-request-card'))
+                            <x-admin.event-request-card :eventRequest="$eq" />
+                        @else
+                            {{-- Fallback in case the component doesn't exist --}}
+                            <div class="event-card bg-white rounded-xl shadow-lg p-6 mb-4">
+                                <h3 class="text-xl font-semibold mb-2">{{ $eq->title }}</h3>
+                                <p class="text-gray-600 mb-4">{{ Str::limit($eq->description ?? '', 100) }}</p>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm text-gray-500">{{ $eq->created_at->format('M j, Y') }}</span>
+                                    <div class="flex space-x-2">
+                                        <button class="btn-primary btn-sm">Approve</button>
+                                        <button class="btn-secondary btn-sm">Reject</button>
+                                    </div>
+                                </div>
+                            </div>
+                        @endif
                     </div>
                 @empty
                     <div class="empty-state">
@@ -237,7 +262,7 @@
             </div>
         </div>
 
-        <!-- Activity Feed (if you want to add this later) -->
+        <!-- Activity Feed -->
         @if($eventRequests->count() > 0)
             <div class="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 mt-8">
                 <div class="flex items-center justify-between mb-6">
@@ -257,7 +282,10 @@
                                     New event request: <span class="text-blue-600">{{ $request->title }}</span>
                                 </p>
                                 <p class="text-sm text-gray-500">
-                                    Submitted {{ $request->created_at->diffForHumans() }} by {{ $request->requester_email }}
+                                    Submitted {{ $request->created_at->diffForHumans() }} 
+                                    @if(isset($request->requester_email))
+                                        by {{ $request->requester_email }}
+                                    @endif
                                 </p>
                             </div>
                             <div class="flex-shrink-0">
@@ -272,7 +300,7 @@
         @endif
     </div>
 
-    <!-- Add some custom JavaScript for enhanced interactions -->
+    @push('scripts')
     <script>
         // Add smooth scrolling and enhanced interactions
         document.addEventListener('DOMContentLoaded', function() {
@@ -288,6 +316,7 @@
             eventCards.forEach(card => {
                 card.addEventListener('mouseenter', function() {
                     this.style.transform = 'translateY(-8px)';
+                    this.style.transition = 'transform 0.3s ease';
                 });
                 
                 card.addEventListener('mouseleave', function() {
@@ -297,20 +326,26 @@
 
             // Auto-refresh pending count every 30 seconds
             setInterval(function() {
-                fetch(window.location.href)
-                    .then(response => response.text())
-                    .then(html => {
-                        const parser = new DOMParser();
-                        const doc = parser.parseFromString(html, 'text/html');
-                        const newCount = doc.querySelector('[data-pending-count]');
-                        const currentCount = document.querySelector('[data-pending-count]');
-                        
-                        if (newCount && currentCount && newCount.textContent !== currentCount.textContent) {
-                            // Show notification of change
-                            showNotification('New event request received!', 'info');
-                        }
-                    })
-                    .catch(error => console.log('Refresh check failed:', error));
+                fetch(window.location.href, {
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                .then(response => response.text())
+                .then(html => {
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(html, 'text/html');
+                    const newCount = doc.querySelector('[data-pending-count]');
+                    const currentCount = document.querySelector('[data-pending-count]');
+                    
+                    if (newCount && currentCount && newCount.textContent !== currentCount.textContent) {
+                        // Show notification of change
+                        showNotification('New event request received!', 'info');
+                        // Optionally reload the page or update the content
+                        // window.location.reload();
+                    }
+                })
+                .catch(error => console.log('Refresh check failed:', error));
             }, 30000);
         });
 
@@ -323,6 +358,8 @@
                 notification.classList.add('bg-blue-500', 'text-white');
             } else if (type === 'success') {
                 notification.classList.add('bg-green-500', 'text-white');
+            } else if (type === 'error') {
+                notification.classList.add('bg-red-500', 'text-white');
             }
             
             notification.innerHTML = `
@@ -330,7 +367,12 @@
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                     </svg>
-                    ${message}
+                    <span>${message}</span>
+                    <button class="ml-4 text-white hover:text-gray-200" onclick="this.parentElement.parentElement.remove()">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
                 </div>
             `;
             
@@ -345,9 +387,12 @@
             setTimeout(() => {
                 notification.classList.add('translate-x-full');
                 setTimeout(() => {
-                    document.body.removeChild(notification);
+                    if (notification.parentNode) {
+                        notification.parentNode.removeChild(notification);
+                    }
                 }, 300);
             }, 5000);
         }
     </script>
+    @endpush
 @endsection

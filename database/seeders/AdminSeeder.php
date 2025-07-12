@@ -19,6 +19,7 @@ class AdminSeeder extends Seeder
 
             'email' => 'Pichchansomanea@gmail.com',
             'password' => Hash::make('123456789'),
+            
         ]);
     }
 }
